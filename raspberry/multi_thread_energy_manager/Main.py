@@ -38,7 +38,7 @@ def do_logic(lock):
     upd = last_reading.last_update
     lock.release()
     print("letto "+str(values)+" at "+str(upd))
-    time.sleep(0.0001)
+    time.sleep(10)
 
 
 if __name__ == "__main__":
