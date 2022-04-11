@@ -12,7 +12,7 @@ def stream_reader(lock):
     global last_reading,end_program,system_manager
     while not end_program:
         if system_manager.ser.in_waiting>0:
-            line = system_manager.readline()
+            line = system_manager.ser.readline()
             #string conversion
             try:
                 line=line[:-2]
