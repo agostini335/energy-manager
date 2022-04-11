@@ -1,6 +1,6 @@
 from datetime import datetime
 class Reading():
-    def __init__(self) -> None:
+    def __init__(self):
         self.creation_time=datetime.now()
         self.last_update=datetime.now()
         self.values=None

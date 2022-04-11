@@ -5,7 +5,7 @@ import statistics
 import RPi.GPIO as GPIO
 
 class SystemManager():
-    def __init__(self) -> None:
+    def __init__(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
