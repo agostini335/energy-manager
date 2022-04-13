@@ -45,10 +45,8 @@ if __name__ == "__main__":
       
     last_reading_lock = threading.Lock()
 
-    # creating threads
+    # creating and start stream reader thread
     thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,))
-      
-    # start stream thread
     thread_stream_reader.start()
      
     try:
@@ -58,6 +56,5 @@ if __name__ == "__main__":
             thread_do_logic.join()
 
     except KeyboardInterrupt:
-        pass
-    end_program=True
+        end_program=True
     print('END')
