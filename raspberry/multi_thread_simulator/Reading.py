@@ -11,7 +11,7 @@ class Reading():
         self.temp_dequeue = deque([0]*temp_deque_size,maxlen=temp_deque_size) 
     def set_values(self,values):
         self.temp_dequeue.appendleft(values['r_temperatura'])
-        values['avg_temperatura'] = np.around(np.mean(self.temp_dequeue),decimals=1)
+        values['avg_temperatura'] = np.round(np.mean(self.temp_dequeue),decimals=1)
         self.values = values
         self.last_update = datetime.now()
         logging.info("reading update"+str(values)+"at:"+str(self.last_update))
