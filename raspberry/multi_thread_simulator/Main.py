@@ -4,6 +4,8 @@ import random
 import time
 import logging
 from Modality import Modality
+from StateMachine import *
+from SystemManager import SystemManager
 
 logging.basicConfig(level=logging.DEBUG, handlers=[
         logging.FileHandler("simulation.log"),
@@ -13,7 +15,9 @@ logging.basicConfig(level=logging.DEBUG, handlers=[
 #global variables
 last_reading = Reading()
 end_program = False
-mod = Modality() 
+mod = Modality()
+system_manager=SystemManager()
+state_manager = StateManager(InitState(),system_manager)
 
 def stream_reader(lock):
     global last_reading,end_program
@@ -22,7 +26,7 @@ def stream_reader(lock):
         if lock.acquire(False):
             last_reading.set_values(values)
             lock.release()
-        time.sleep(0.1*random.randint(0,10))
+        time.sleep(2*random.randint(0,10))
 
 def mod_setter(mod_lock):
     global mod,end_program
@@ -35,9 +39,10 @@ def mod_setter(mod_lock):
         else:
             new_mod ='AUTO'
         mod_lock.acquire()
-        mod.request_change(new_mod)
+        #mod.request_change(new_mod)
+        mod.request_change('AUTO')
         mod_lock.release()
-        logging.info("Request change MOD TO: "+new_mod)
+        #logging.info("Request change MOD TO: "+new_mod)
         time.sleep(random.randint(3,7))
               
 def mod_manager(reading_lock,mod_lock):
@@ -53,9 +58,10 @@ def mod_manager(reading_lock,mod_lock):
         
         if mod.current == 'AUTO':
             reading_lock.acquire()
-            current_reading = Reading(values=last_reading.values.copy(),last_update=last_reading.last_update)
+            current_reading = last_reading.get_copy()
             reading_lock.release()
-            logging.info("do logic on: "+str(current_reading.values)+" :: reftime "+str(current_reading.last_update))
+            state_manager.handle_reading(current_reading)
+            logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
             time.sleep(1)
         elif mod.current == 'OFF':
             pass
