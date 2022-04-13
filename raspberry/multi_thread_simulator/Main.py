@@ -46,9 +46,9 @@ def mod_manager(reading_lock,mod_lock):
         # check if mod switch should occur
         mod_lock.acquire()
         if mod.to_switch :
-           # procedure per il cambio di modalità
-           mod.set_current(mod.requested)
-           logging.info("Changed MOD TO: "+str(mod.current))
+            # procedure per il cambio di modalità
+            mod.set_current(mod.requested)
+            logging.info("Changed MOD TO: "+str(mod.current))
         mod_lock.release() 
         
         if mod.current == 'AUTO':
