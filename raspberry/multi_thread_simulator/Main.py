@@ -43,10 +43,10 @@ def mod_setter(mod_lock):
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program
     while not end_program:
-        # check if mod switch should occur
+        #check if mod switch should occur
         mod_lock.acquire()
         if mod.to_switch :
-            # procedure per il cambio di modalità
+            #procedure per il cambio di modalità
             mod.set_current(mod.requested)
             logging.info("Changed MOD TO: "+str(mod.current))
         mod_lock.release() 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     last_reading_lock = threading.Lock()
     mod_lock = threading.Lock()
 
-    # creating threads
+    #creating threads
     thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,))
     thread_mod_setter = threading.Thread(target=mod_setter, args=(mod_lock,))
     thread_mod_manager = threading.Thread(target=mod_manager, args=(last_reading_lock,mod_lock))
