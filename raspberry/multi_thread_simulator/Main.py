@@ -22,11 +22,11 @@ state_manager = StateManager(InitState(),system_manager)
 def stream_reader(lock):
     global last_reading,end_program
     while not end_program:
-        values = {'r_tensione' : random.randint(0,100),'r_carico' :   random.randint(0,100),'r_produzione' : random.randint(0,100),'r_immissione' : random.randint(0,100),'r_boiler' : random.randint(0,100), 'r_temperatura' :random.randint(0,100)}	
+        values = {'r_tensione' : random.randint(0,100),'r_carico' :   random.randint(0,100),'r_produzione' : random.randint(0,100),'r_immissione' : random.randint(0,600),'r_boiler' : random.randint(0,3000), 'r_temperatura' :random.randint(0,100)}	
         if lock.acquire(False):
             last_reading.set_values(values)
             lock.release()
-        time.sleep(2*random.randint(0,10))
+        time.sleep(0.2*random.randint(0,10))
 
 def mod_setter(mod_lock):
     global mod,end_program
@@ -39,11 +39,11 @@ def mod_setter(mod_lock):
         else:
             new_mod ='AUTO'
         mod_lock.acquire()
-        #mod.request_change(new_mod)
-        mod.request_change('AUTO')
+        mod.request_change(new_mod)
+        #mod.request_change('AUTO')
         mod_lock.release()
         #logging.info("Request change MOD TO: "+new_mod)
-        time.sleep(random.randint(3,7))
+        time.sleep(random.randint(5,15))
               
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program
@@ -62,7 +62,7 @@ def mod_manager(reading_lock,mod_lock):
             reading_lock.release()
             state_manager.handle_reading(current_reading)
             logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
-            time.sleep(1)
+            time.sleep(0.1)
         elif mod.current == 'OFF':
             pass
         elif mod.current == 'ON':
