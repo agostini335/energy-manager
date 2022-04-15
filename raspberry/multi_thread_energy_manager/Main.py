@@ -89,9 +89,10 @@ def mod_manager(reading_lock,mod_lock):
         if mod_lock.locked():
             mod_lock.release()    
         #handling reading
-        reading_lock.acquire()
-        current_reading = last_reading.get_copy()
-        reading_lock.release()
+        if last_reading.is_fresh:
+            reading_lock.acquire()
+            current_reading = last_reading.get_copy()
+            reading_lock.release()
         state_manager.handle_reading(current_reading)
         if current_reading.is_fresh:
             logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))

@@ -15,9 +15,9 @@ class Reading():
         self.temp_dequeue.appendleft(values['r_temperatura'])
         values['avg_temperatura'] = np.round(np.mean(self.temp_dequeue),decimals=1)
         self.values = values
-        self.is_fresh =True
         self.last_update = datetime.now()
         logging.info("STREAM: update"+str(values)+"at:"+str(self.last_update))
+        self.is_fresh =True
     
     def get_copy(self):
         if self.values == None:
