@@ -94,7 +94,7 @@ class SystemManager():
         GPIO.output(self.pin_down,True)
         # -> full_power
         GPIO.output(self.pin_up,False)
-        time.sleep(4)
+        time.sleep(6)
         GPIO.output(self.pin_up,True)
 
         

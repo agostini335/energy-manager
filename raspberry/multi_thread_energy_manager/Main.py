@@ -42,13 +42,15 @@ def stream_reader(lock):
                     if lock.acquire(False):
                         last_reading.set_values(values)
                         lock.release()
+                    else:
+                        logging.info("STREAM: NOTUPDATED"+str(values)+"at:"+str(datetime.now()))
                 elif ( len(line_split) == 2 and line_split[0]=='0'):
                     #TODO scenario not implemented r_boiler = int(line_split[1])
                     pass
                 else:
-                    print("invalid string")								
+                    logging.info("STREAM:invalid string")								
             except:
-                print("stream reader error")
+                logging.info("STREAM:stream reader error")
 
 def mod_setter(mod_lock):
     #TODO REPLACE WITH BUTTON CODE

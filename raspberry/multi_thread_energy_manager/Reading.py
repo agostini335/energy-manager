@@ -20,7 +20,7 @@ class Reading():
         logging.info("STREAM: update"+str(values)+"at:"+str(self.last_update))
     
     def get_copy(self):
-        if self.values== None:
+        if self.values == None:
             return Reading(values = {'r_tensione' : 0,'r_carico' :  0,'r_produzione' : 0,'r_immissione' : 0,'r_boiler' : 0, 'r_temperatura' : 0, 'avg_temperatura': 0},last_update=datetime.now(),temp_deque_size=0,is_fresh=False)
         r = Reading(self.values.copy(),self.last_update,temp_deque_size=0,is_fresh=self.is_fresh)
         self.is_fresh = False
