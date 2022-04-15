@@ -18,8 +18,10 @@ class StateManager():
         self.transition_to(state)
 
     def transition_to(self, state):
+        
         if self._state != None:
-            logging.info("TRX: from "+self._state.name+" to "+state.name)
+            logging.info("STATE MANAGER TRX: from "+self._state.name+" to "+state.name)
+            assert((self._state.name != state.name) or state.name=='OffState')
         self.trace_deque.appendleft((state.name, datetime.now()))
         logging.info(self.trace_deque)
         self._state = state
@@ -159,3 +161,26 @@ class TimeOutState(AbstractState):
                     self.state_manager.transition_to(ActiveState())
             else:
                 self.last_fresh_ts = reading.last_update
+
+class OnState(AbstractState):
+    def __init__(self):
+        self.name = 'OnState'
+    def on_start(self):
+        self.state_manager.system_manager.releon()
+        self.state_manager.system_manager.full_power()
+    def on_exit(self):
+        pass
+    def handle(self, reading):
+        if reading.is_fresh and reading.values['avg_temperatura'] >= self.state_manager.system_manager.TEMP_GOAL:
+            self.state_manager.transition_to(OffState())
+        
+class OffState(AbstractState):
+    def __init__(self):
+        self.name = 'OffState'
+    def on_start(self):
+        self.state_manager.system_manager.scarica_shutdown()
+    def on_exit(self):
+        pass
+    def handle(self, reading):
+        pass
+

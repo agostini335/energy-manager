@@ -3,8 +3,36 @@ import time
 import lcd_driver
 import statistics
 import RPi.GPIO as GPIO
+import logging
 
 class SystemManager():
+    #general
+    TEMP_GOAL = 51 #CELSIUS
+    
+    #init
+    INIT_MAX_WAITING_TIME = 10 # secondi di attesa in INIT prima di passare ad Active o Timeout
+    INIT_MIN_FRESH_READINGS = 2 # numero minimo di letture Fresh in INIT da ricevere per poter passare in Active
+
+    #timeout
+    TIMEOUT_TIME_BTWN_FRESH = 10 # secondi entro il quale vanno ricevute 2 letture Fresh per passare in Active o Temp Reached
+    
+    #tempreached
+    TEMPREACHED_HISTERESYS = 4 # gradi di isteresi per uscire da tempreached es: temp_goal = 50, isteresi= 5 -> torno Active a 45 gradi
+    TEMPREACHED_WAITING_TIME_TO = 10 # secondi dall'ultima lettura oltre il quale si passa in timeout
+
+    #active
+    ACTIVE_WAITING_TIME_TO = 10 # secondi dall'ultima lettura oltre il quale si passa in Timeout
+    ACTIVE_MIN_IMMISSIONE = 100 # watt minimi di immissione per operare e non spegnere
+    ACTIVE_MIN_IMMISSIONE_TO = 10 # secondi di attesa in no-immissione prima di spegnere il triac
+    ACTIVE_NOISE_BOILER = 25 # watt di tolleranza oltre quali si considera il boiler spento e non si da il comando down
+    ACTIVE_LIMITE_TRIAC = 2300 # watt max che può raggiungere il triac
+    ACTIVE_DELTA_MAX_TRIAC_UP = 100 #watt di distanza dal limite triac entro il quale non eseguiamo up per sicurezza
+    ACTIVE_LOWERBOUND_IMM = 150 # watt minimi di immissione per essere in fascia goal
+    ACTIVE_UPPERBOUND_IMM = 250 # watt massimi di immissione per essere in fascia goal
+
+    #config
+    RELE_STATE = True #TODO VERIFY
+
     def __init__(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -13,41 +41,61 @@ class SystemManager():
         self.ser.ReadBufferSize = 30
 
         #GPIO CONFIG
-        pin_rele = 16
-        pin_up = 21
-        pin_down =20
-        GPIO.setup(pin_rele,GPIO.OUT) #rele
-        GPIO.setup(pin_up,GPIO.OUT) #up
-        GPIO.setup(pin_down,GPIO.OUT) #down
-        GPIO.output(pin_rele,False)
-        GPIO.output(pin_up,False)
-        GPIO.output(pin_down,False)
+        self.pin_rele = 16
+        self.pin_up = 21
+        self.pin_down =20
+        GPIO.setup(self.pin_rele,GPIO.OUT) #rele
+        GPIO.setup(self.pin_up,GPIO.OUT) #up
+        GPIO.setup(self.pin_down,GPIO.OUT) #down
+        GPIO.output(self.pin_rele,False)
+        GPIO.output(self.pin_up,False)
+        GPIO.output(self.pin_down,False)
+    
+    def scarica_shutdown(self):
+        if self.RELE_STATE:
+            logging.info("SYTSTEM: SCARICASHUTDOWN")
+            GPIO.output(self.pin_up,True)
+            time.sleep(1)
+            GPIO.output(self.pin_down,False)	
+            time.sleep(6)
+            GPIO.output(self.pin_down,True)
+            GPIO.output(self.pin_rele,False)
+            self.RELE_STATE = False
 
-        r_tensione = -1 	#tensione letta
-        r_carico = -1   	#carico letto
-        r_produzione = -1 	#produzione letta
-        r_immissione = -1 	#immissione sonda letta
-        r_boiler = -1 		#carico boiler letto
-        r_temperatura =-1	#temperatura sonda letta
-        stato_rele=True
-        notimeout=True
-        f_immissione=True
-        temp_ok=False
+    def releon(self):
+        if not self.RELE_STATE:
+            logging.info("SYTSTEM: RELEON")
+            GPIO.output(self.pin_rele,True)            
+            self.RELE_STATE = True
 
-        sum_temp = 0
-        temp_counter = 0
+    def s_down(self):
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM:---DOWN---")
+        GPIO.output(self.pin_down,False)
+        time.sleep(0.2)
+        GPIO.output(self.pin_down,True)
 
-        DOWN_GOAL=150
-        UP_GOAL=220
-        AVG_TEMP_WINDOW_LENGTH = 30 # Valori considerati nella media della temperatura
-        ISTERESI_TEMPERATURA=4 #GRADI GOAL DI TEMPERATURA
-        TEMPERATURA_GOAL=52 #GRADI GOAL DI TEMPERATURA
-        MARGINE_IMMISSIONE = 100 	# WATT di margine
-        LIMITE_TRIAC = 2300 #WATT max triac
-        TIMEOUT = 20			#Secondi di Timeout consentiti perdita connessione radio
-        TIMEOUT_IMMISSIONE = 20    #Secondi di Timeout consentiti assenza di immissione
-        TIMEOUT_TEMP_OK = 5 #Secondi di timeout prima di staccare il rele a temperatura raggiunta
-        last_time_read = time.time()
-        current_milli_time =time.time()
-        last_temp_ok =time.time()
-        first_temp_ok =time.time()
+    def s_up(self):
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM:+++UP+++")
+        GPIO.output(self.pin_up,False)
+        time.sleep(0.2)
+        GPIO.output(self.pin_up,True)
+
+    def full_power(self):
+        #TODO TO TEST
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM: FULL POWER")    
+        # -> scarica    
+        GPIO.output(self.pin_up,True)
+        time.sleep(1)
+        GPIO.output(self.pin_down,False)	
+        time.sleep(6)
+        GPIO.output(self.pin_down,True)
+        # -> full_power
+        GPIO.output(self.pin_up,False)
+        time.sleep(4)
+        GPIO.output(self.pin_up,True)
+
+        
+

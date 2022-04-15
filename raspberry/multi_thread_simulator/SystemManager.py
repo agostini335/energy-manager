@@ -2,6 +2,7 @@ import time
 import logging
 class SystemManager():
 
+    #general
     TEMP_GOAL = 51 #CELSIUS
     
     #init
@@ -25,30 +26,31 @@ class SystemManager():
     ACTIVE_LOWERBOUND_IMM = 150 # watt minimi di immissione per essere in fascia goal
     ACTIVE_UPPERBOUND_IMM = 250 # watt massimi di immissione per essere in fascia goal
 
+    #config
+    RELE_STATE = True #TODO VERIFY
 
     def __init__(self):
         pass
-    def scarica(self):
-        logging.info("SYTSTEM:scarica")
-        time.sleep(6)
+
     def scarica_shutdown(self):
-        logging.info("SYTSTEM:scaricashutdown")
-        time.sleep(6)
-    def up(self):
-        logging.info("SYTSTEM:up")
-        time.sleep(3)
-    def down(self):
-        logging.info("SYTSTEM:down")
-        time.sleep(3)
+        if self.RELE_STATE:
+            logging.info("SYTSTEM: SCARICASHUTDOWN")
+            time.sleep(6)
+            self.RELE_STATE = False
     def releon(self):
-        logging.info("SYTSTEM:releON")
-        time.sleep(3)
+        if not self.RELE_STATE:
+            logging.info("SYTSTEM: RELEON")
+            time.sleep(3)
+            self.RELE_STATE = True
     def s_down(self):
-        logging.info("SYTSTEM:##Sdown")
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM:---DOWN---")
         time.sleep(3)
     def s_up(self):
-        logging.info("SYTSTEM:##Sup")
-        time.sleep(3)
-
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM:+++UP+++")
+    def full_power(self):
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM: FULL POWER")
 
     
