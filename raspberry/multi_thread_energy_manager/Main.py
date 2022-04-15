@@ -63,10 +63,10 @@ def mod_setter(mod_lock):
         else:
             new_mod ='AUTO'
         mod_lock.acquire()
-        #mod.request_change(new_mod)
-        mod.request_change('AUTO')
-        #logging.info("Request change MOD TO: "+new_mod)
-        time.sleep(10*random.randint(0,10))
+        mod.request_change(new_mod)
+        #mod.request_change('AUTO')
+        logging.info("Request change MOD TO: "+new_mod)
+        time.sleep(20*random.randint(0,10))
     ###################################################################
 
 def mod_manager(reading_lock,mod_lock):
