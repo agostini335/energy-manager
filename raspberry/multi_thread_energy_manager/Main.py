@@ -43,7 +43,7 @@ def stream_reader(lock):
                         last_reading.set_values(values)
                         lock.release()
                     else:
-                        logging.info("STREAM: NOTUPDATED"+str(values)+"at:"+str(datetime.now()))
+                        logging.info("STREAM: NOTUPDATEDNOTUPDATEDNOTUPDATEDNOTUPDATEDNOTUPDATEDNOTUPDATEDNOTUPDATED"+str(datetime.now()))
                 elif ( len(line_split) == 2 and line_split[0]=='0'):
                     #TODO scenario not implemented r_boiler = int(line_split[1])
                     pass
