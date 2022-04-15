@@ -73,6 +73,7 @@ def mod_setter(mod_lock):
 
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program
+    current_reading = last_reading.get_copy()
     while not end_program:
         #mod setting
         old_mod = mod.current
