@@ -26,11 +26,11 @@ class DisplayManager():
         self.print_mod_state()
 
     def print_current_mod(self,s):
-        self.request_mod =s
+        self.current_mod =s
         self.print_mod_state()
 
     def print_state(self,s):
-        self.request_mod =s
+        self.state =s
         self.print_mod_state()
 
     def driver_print(self,s,row):
