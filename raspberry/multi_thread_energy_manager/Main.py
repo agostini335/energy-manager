@@ -17,7 +17,7 @@ last_reading = Reading()
 end_program = False
 system_manager = SystemManager()
 display_manager = DisplayManager()
-system_manager.print_start()
+display_manager.print_start()
 
 mod = Modality(default='OFF')
 if mod.current == 'OFF':
