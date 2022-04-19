@@ -54,7 +54,7 @@ def stream_reader(lock):
                     logging.info("STREAM:invalid string")								
             except:
                 logging.info("STREAM:stream reader error")
-
+ 
 def mod_setter(mod_lock):
     #TODO REPLACE WITH BUTTON CODE
     ###################################################################
