@@ -3,9 +3,11 @@ class DisplayManager():
     current_mod=""
     request_mod = ""
     state = ""
+    values = {'r_tensione' : 0,'r_carico' :  0,'r_produzione' : 0,'r_immissione' : 0,'r_boiler' : 0, 'r_temperatura' : 0, 'avg_temperatura': 0}
 
 
-    def show_reading(self,d):
+    def print_reading(self):
+        d = self.values
         r1="rete: "+str(d['r_tensione'])+" car: "+str(d['r_carico'])
         if d['r_immissione']>0:
             r2="prd: "+str(d['r_produzione'])+" imm: "+str(d['r_immissione'])
@@ -22,23 +24,17 @@ class DisplayManager():
         s = self.current_mod.ljust(5)[:5] +"| "+self.state.ljust(5)[:5]+"| "+self.request_mod.ljust(5)[:5]
         lcd_driver.lcd_string(s,4)
     
-    def print_start(self):
-        s = "STARTING SYSTEM"
-        lcd_driver.lcd_string(s,4)
-    
-    def print_request_mod(self,s):
+    def set_request_mod(self,s):
         self.request_mod =s
-        self.print_mod_state()
-
-    def print_current_mod(self,s):
+        
+    def set_current_mod(self,s):
         self.current_mod =s
-        self.print_mod_state()
 
-    def print_state(self,s):
+    def set_state(self,s):
         self.state =s
-        self.print_mod_state()
 
+    def set_reading_values(self,v):
+        self.values = v
     def driver_print(self,s,row):
-        # in real system
         lcd_driver.lcd_string(s,row)
 

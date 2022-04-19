@@ -43,6 +43,7 @@ def stream_reader(lock):
                     values = {'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6])}				
                     if lock.acquire(False):
                         last_reading.set_values(values)
+                        DisplayManager.set_reading_values(last_reading.values)
                         lock.release()
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
@@ -57,7 +58,7 @@ def stream_reader(lock):
 def mod_setter(mod_lock):
     #TODO REPLACE WITH BUTTON CODE
     ###################################################################
-    global mod,end_program
+    global mod,end_program,display_manager
     while not end_program:
         r = random.randint(0,2)
         if r == 0:
@@ -70,8 +71,15 @@ def mod_setter(mod_lock):
         mod.request_change(new_mod)
         #mod.request_change('AUTO')
         logging.info("Request change MOD TO: "+new_mod)
+        display_manager.set_request_mod(new_mod)
         time.sleep(20*random.randint(0,10))
     ###################################################################
+
+def display_printer():
+    global display_manager,end_program
+    while not end_program:
+        display_manager.print_mod_state()
+        display_manager.print_reading()
 
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program, display_manager
@@ -81,6 +89,7 @@ def mod_manager(reading_lock,mod_lock):
         old_mod = mod.current
         if mod.set_current(mod.requested):
             #transizone avvenuta
+            display_manager.set_current_mod(mod.current)
             logging.info("Changing MOD from "+ str(old_mod)+" TO: "+str(mod.current))
             if mod.current == 'AUTO':
                 state_manager.transition_to(InitState())                
@@ -96,9 +105,7 @@ def mod_manager(reading_lock,mod_lock):
             reading_lock.acquire()
             current_reading = last_reading.get_copy()
             reading_lock.release()
-            display_manager.show_reading(current_reading.values)
-            display_manager.print_state(state_manager._state.name)
-            display_manager.print_current_mod(mod.current)
+            display_manager.set_state(state_manager._state.name)
             logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
         state_manager.handle_reading(current_reading)
         current_reading.is_fresh=False                
@@ -115,11 +122,12 @@ if __name__ == "__main__":
     thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,))
     thread_mod_setter = threading.Thread(target=mod_setter, args=(mod_lock,))
     thread_mod_manager = threading.Thread(target=mod_manager, args=(last_reading_lock,mod_lock))
+    thread_display = threading.Thread(target=display_printer, args=())
 
     thread_stream_reader.start()
     thread_mod_setter.start()
     thread_mod_manager.start()
- 
+    thread_display.start()
     try:
         while True:
             pass
