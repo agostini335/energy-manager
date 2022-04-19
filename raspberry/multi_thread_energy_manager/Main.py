@@ -9,8 +9,8 @@ from SystemManager import SystemManager
 from DisplayManager import DisplayManager
 
 logging.basicConfig(level=logging.DEBUG, handlers=[
-        logging.FileHandler("energy_manager.log"),
-        logging.StreamHandler()
+        #logging.FileHandler("energy_manager.log"),
+        #logging.StreamHandler()
     ])
 
 last_reading = Reading()
@@ -68,11 +68,11 @@ def mod_setter(mod_lock):
         else:
             new_mod ='AUTO'
         mod_lock.acquire()
-        mod.request_change(new_mod)
-        #mod.request_change('AUTO')
-        logging.info("Request change MOD TO: "+new_mod)
-        display_manager.set_request_mod(new_mod)
-        time.sleep(20*random.randint(0,10))
+        #mod.request_change(new_mod)
+        mod.request_change('AUTO')
+        #logging.info("Request change MOD TO: "+new_mod)
+        #display_manager.set_request_mod(new_mod)
+        #time.sleep(20*random.randint(0,10))
     ###################################################################
 
 def display_printer():
