@@ -44,7 +44,7 @@ def stream_reader(lock):
                     if lock.acquire(False):
                         last_reading.set_values(values)
                         lock.release()
-                        display_manager.set_reading_values(last_reading.values)
+                        display_manager.set_reading_values({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6])})
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
                 elif ( len(line_split) == 2 and line_split[0]=='0'):
@@ -78,8 +78,9 @@ def mod_setter(mod_lock):
 def display_printer():
     global display_manager,end_program
     while not end_program:
-        display_manager.print_mod_state()
         display_manager.print_reading()
+        display_manager.print_mod_state()
+        
 
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program, display_manager
