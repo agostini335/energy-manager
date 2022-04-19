@@ -80,7 +80,6 @@ def display_printer():
     while not end_program:
         display_manager.print_mod_state()
         display_manager.print_reading()
-        time.sleep(0.05)
 
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program, display_manager
