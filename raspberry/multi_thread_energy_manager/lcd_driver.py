@@ -27,7 +27,7 @@ LCD_BACKLIGHT  = 0x08  # On
 ENABLE = 0b00000100 # Enable bit
 
 # Timing constants
-E_PULSE = 0
+E_PULSE = 0.00000000000000001
 E_DELAY = 0
 
 #Open I2C interface
