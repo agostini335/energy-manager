@@ -43,7 +43,6 @@ def stream_reader(lock):
                     values = {'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6])}				
                     if lock.acquire(False):
                         last_reading.set_values(values)
-                        display_manager.show_reading(last_reading.values)
                         lock.release()
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
@@ -58,7 +57,7 @@ def stream_reader(lock):
 def mod_setter(mod_lock):
     #TODO REPLACE WITH BUTTON CODE
     ###################################################################
-    global mod,end_program,display_manager
+    global mod,end_program
     while not end_program:
         r = random.randint(0,2)
         if r == 0:
@@ -97,7 +96,9 @@ def mod_manager(reading_lock,mod_lock):
             reading_lock.acquire()
             current_reading = last_reading.get_copy()
             reading_lock.release()
+            display_manager.show_reading(current_reading.values)
             display_manager.print_state(state_manager._state.name)
+            display_manager.print_mod_state(state_manager.mod.current)
             logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
         state_manager.handle_reading(current_reading)
         current_reading.is_fresh=False                
