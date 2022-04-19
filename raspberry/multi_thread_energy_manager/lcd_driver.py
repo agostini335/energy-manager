@@ -27,8 +27,8 @@ LCD_BACKLIGHT  = 0x08  # On
 ENABLE = 0b00000100 # Enable bit
 
 # Timing constants
-E_PULSE = 0.000000005
-E_DELAY = 0.000000005
+E_PULSE = 0
+E_DELAY = 0
 
 #Open I2C interface
 #bus = smbus.SMBus(0)  # Rev 1 Pi uses 0
