@@ -18,7 +18,7 @@ class DisplayManager():
 
 
     def print_mod_state(self):
-        s = self.current_mod.ljust(5) +" "+self.state.ljust(5)+" "+self.request_mod.ljust(5)
+        s = self.current_mod.ljust(5)[:5] +" "+self.state.ljust(5)[:5]+" "+self.request_mod.ljust(5)[:5]
         lcd_driver.lcd_string(s,4)
     
     def print_request_mod(self,s):
