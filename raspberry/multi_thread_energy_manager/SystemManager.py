@@ -7,7 +7,7 @@ import logging
 
 class SystemManager():
     #general
-    TEMP_GOAL = 51 #CELSIUS
+    TEMP_GOAL = 55 #CELSIUS
     
     #init
     INIT_MAX_WAITING_TIME = 10 # secondi di attesa in INIT prima di passare ad Active o Timeout
@@ -17,7 +17,7 @@ class SystemManager():
     TIMEOUT_TIME_BTWN_FRESH = 10 # secondi entro il quale vanno ricevute 2 letture Fresh per passare in Active o Temp Reached
     
     #tempreached
-    TEMPREACHED_HISTERESYS = 4 # gradi di isteresi per uscire da tempreached es: temp_goal = 50, isteresi= 5 -> torno Active a 45 gradi
+    TEMPREACHED_HISTERESYS = 5 # gradi di isteresi per uscire da tempreached es: temp_goal = 50, isteresi= 5 -> torno Active a 45 gradi
     TEMPREACHED_WAITING_TIME_TO = 10 # secondi dall'ultima lettura oltre il quale si passa in timeout
 
     #active
