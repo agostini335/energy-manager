@@ -7,6 +7,7 @@ from Modality import Modality
 from StateMachine import *
 from SystemManager import SystemManager
 from DisplayManager import DisplayManager
+from itertools import cycle
 
 logging.basicConfig(level=logging.DEBUG, handlers=[
         #logging.FileHandler("energy_manager.log"),
@@ -56,10 +57,40 @@ def stream_reader(lock):
                 logging.info("STREAM:stream reader error")
  
 def mod_setter(mod_lock):
+    global mod,end_program,display_manager,system_manager
+
+    lst = ['AUTO', 'ON', 'OFF']
+    pool = cycle(lst)
+    pressed=datetime.now()
+    premuto = False
+    new_mod='AUTO'
+    while not end_program:
+        if system_manager.buttonIsHigh():
+            i = next(pool)
+            print('pressed '+i)
+            pressed = datetime.now()
+            premuto = True
+            display_manager.set_request_mod(i)
+            time.sleep(system_manager.BUTTON_TIME_SLEEP)
+        if (datetime.now()-pressed).total_seconds()>system_manager.BUTTON_PRESSED_WAIT and premuto:
+            premuto=False
+            new_mod = i
+            mod_lock.acquire()
+            #mod.request_change(new_mod)
+            mod.request_change(new_mod)
+            logging.info("Request change MOD TO: "+new_mod)
+
+        
+
+
+
+
+
     #TODO REPLACE WITH BUTTON CODE
     ###################################################################
+    '''
     global mod,end_program,display_manager
-    while not end_program:
+    while not end_program:        
         r = random.randint(0,2)
         if r == 0:
             new_mod = 'OFF'
@@ -70,6 +101,7 @@ def mod_setter(mod_lock):
         mod_lock.acquire()
         #mod.request_change(new_mod)
         mod.request_change('AUTO')
+        '''
         #logging.info("Request change MOD TO: "+new_mod)
         #display_manager.set_request_mod(new_mod)
         #time.sleep(20*random.randint(0,10))
