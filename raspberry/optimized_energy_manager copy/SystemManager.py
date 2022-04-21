@@ -38,7 +38,7 @@ class SystemManager():
         GPIO.setmode(GPIO.BCM)
 
         self.ser = serial.Serial('/dev/ttyUSB0',9600)
-        self.ser.ReadBufferSize = 30
+        self.ser.ReadBufferSize = 20
 
         #GPIO CONFIG
         self.pin_rele = 16
