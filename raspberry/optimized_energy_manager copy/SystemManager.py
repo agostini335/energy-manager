@@ -33,6 +33,10 @@ class SystemManager():
     #config
     RELE_STATE = True #TODO VERIFY
 
+    #button
+    BUTTON_TIME_SLEEP = 0.5
+    BUTTON_PRESSED_WAIT = 2
+
     def __init__(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -96,6 +100,9 @@ class SystemManager():
         GPIO.output(self.pin_up,False)
         time.sleep(6)
         GPIO.output(self.pin_up,True)
+    
+    def buttonIsHigh():
+        return GPIO.input(10) == GPIO.HIGH
 
         
 
