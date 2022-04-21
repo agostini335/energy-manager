@@ -8,11 +8,11 @@ class DisplayManager():
 
     def print_reading(self):
         d = self.values
-        r1="rete: "+str(d['r_tensione'])+" car: "+str(d['r_carico'])
+        r1="rete: "+str(d['r_tensione']).ljust(4)[:4]+" car: "+str(d['r_carico']).ljust(4)[:4]
         if d['r_immissione']>0:
-            r2="prd: "+str(d['r_produzione'])+" imm: "+str(d['r_immissione'])
+            r2="prd: "+str(d['r_produzione']).ljust(4)[:4]+" imm: "+str(d['r_immissione']).ljust(4)[:4]
         else:
-            r2="prd: "+str(d['r_produzione'])+" pre: "+str(-1*int(d['r_immissione']))
+            r2="prd: "+str(d['r_produzione']).ljust(4)[:4]+" pre: "+str(-1*int(d['r_immissione'])).ljust(4)[:4]
 
         r3="boi: "+str(d['r_boiler'])+" tmp: "+str(d['avg_temperatura'])
         self.driver_print(r1,1)
@@ -21,7 +21,7 @@ class DisplayManager():
 
 
     def print_mod_state(self):
-        s = self.current_mod.ljust(5)[:5] +"| "+self.state.ljust(5)[:5]+"| "+self.request_mod.ljust(5)[:5]
+        s = self.current_mod.ljust(5)[:5] +" | "+self.state.ljust(5)[:5]+" | "+self.request_mod.ljust(5)[:5]
         lcd_driver.lcd_string(s,4)
     
     def set_request_mod(self,s):
