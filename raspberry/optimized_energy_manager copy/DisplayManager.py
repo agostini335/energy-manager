@@ -8,7 +8,7 @@ class DisplayManager():
 
     def print_reading(self):
         d = self.values
-        r1="rete: "+str(d['r_tensione']).ljust(4)[:4]+" car: "+str(d['r_carico']).ljust(4)[:4]
+        r1="rete: "+str(d['r_tensione']).ljust(3)[:3]+" car: "+str(d['r_carico']).ljust(4)[:4]
         if d['r_immissione']>0:
             r2="prd: "+str(d['r_produzione']).ljust(4)[:4]+" imm: "+str(d['r_immissione']).ljust(4)[:4]
         else:
