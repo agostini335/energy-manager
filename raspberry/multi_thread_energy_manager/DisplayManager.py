@@ -14,7 +14,7 @@ class DisplayManager():
         else:
             r2="prd: "+str(d['r_produzione']).ljust(4)[:4]+" pre: "+str(-1*int(d['r_immissione'])).ljust(4)[:4]
 
-        r3="boi: "+str(d['r_boiler'])+" tmp: "+str(d['avg_temperatura'])
+        r3="boi: "+str(d['r_boiler']).ljust(4)[:4]+" tmp: "+str(d['avg_temperatura']).ljust(4)[:4]
         self.driver_print(r1,1)
         self.driver_print(r2,2)
         self.driver_print(r3,3)
