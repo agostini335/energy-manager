@@ -102,7 +102,7 @@ class SystemManager():
         time.sleep(6)
         GPIO.output(self.pin_up,True)
     
-    def buttonIsHigh():
+    def buttonIsHigh(self):
         return GPIO.input(10) == GPIO.HIGH
 
         
