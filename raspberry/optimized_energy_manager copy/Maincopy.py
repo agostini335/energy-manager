@@ -7,6 +7,7 @@ from Modality import Modality
 from StateMachine import *
 from SystemManager import SystemManager
 from DisplayManager import DisplayManager
+from itertools import cycle
 
 logging.basicConfig(level=logging.DEBUG, handlers=[
         #logging.FileHandler("energy_manager.log"),
