@@ -24,7 +24,7 @@ while True:
         pressed = datetime.now()
         premuto = True
         time.sleep(1)
-    if (pressed-datetime.now()).total_seconds()>k and premuto:
+    if (datetime.now()-pressed).total_seconds()>k and premuto:
         display_manager.driver_print("pressed",2)
         premuto=False
 
