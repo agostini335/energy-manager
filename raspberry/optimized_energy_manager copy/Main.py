@@ -84,25 +84,8 @@ def display_printer():
 
 def mod_manager(reading_lock,mod_lock):
     global last_reading,mod,end_program, display_manager
+    current_reading = last_reading.get_copy()
     while not end_program:
-        if system_manager.ser.in_waiting>0:
-                line = system_manager.ser.readline()
-                #string conversion
-                try:
-                    line=line[:-2]
-                    line_split = line.decode().split(';')
-                    # string type check
-                    if ( len(line_split) == 7 and line_split[0]=='1' ):
-                        values = {'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6])}				
-                        last_reading.set_values(values)
-                        display_manager.set_reading_values({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura']})
-                    elif ( len(line_split) == 2 and line_split[0]=='0'):
-                        pass
-                    else:
-                        logging.info("STREAM:invalid string")								
-                except:
-                    logging.info("STREAM:stream reader error")
-        current_reading = last_reading.get_copy()
         #mod setting
         old_mod = mod.current
         if mod.set_current(mod.requested):
@@ -120,7 +103,9 @@ def mod_manager(reading_lock,mod_lock):
             mod_lock.release()    
         #handling reading
         if last_reading.is_fresh:
+            reading_lock.acquire()
             current_reading = last_reading.get_copy()
+            reading_lock.release()
             display_manager.set_state(state_manager._state.name)
             logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
         state_manager.handle_reading(current_reading)
@@ -135,12 +120,12 @@ if __name__ == "__main__":
     mod_lock.acquire() # priority to default modality
     
     #creating threads
-    #thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,))
+    thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,))
     thread_mod_setter = threading.Thread(target=mod_setter, args=(mod_lock,))
     thread_mod_manager = threading.Thread(target=mod_manager, args=(last_reading_lock,mod_lock))
     thread_display = threading.Thread(target=display_printer, args=())
 
-    #thread_stream_reader.start()
+    thread_stream_reader.start()
     thread_mod_setter.start()
     thread_mod_manager.start()
     thread_display.start()
