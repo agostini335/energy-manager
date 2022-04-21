@@ -40,6 +40,7 @@ class SystemManager():
     def __init__(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
+        GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) 
 
         self.ser = serial.Serial('/dev/ttyUSB0',9600)
         self.ser.ReadBufferSize = 20
