@@ -26,7 +26,7 @@ while True:
         time.sleep(1)
     if (datetime.now()-pressed).total_seconds()>k and premuto:
         display_manager.driver_print(i,2)
-        display_manager.driver_print(datetime.now(),3)
+        display_manager.driver_print(str(datetime.now()),3)
         premuto=False
 
 
