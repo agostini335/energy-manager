@@ -77,7 +77,7 @@ def mod_setter(mod_lock):
             premuto=False
             new_mod = i
             mod_lock.acquire()
-        mod.request_change(new_mod)
+            mod.request_change(new_mod)
             logging.info("##################### Request change MOD TO: "+new_mod)
 
 def display_printer():
