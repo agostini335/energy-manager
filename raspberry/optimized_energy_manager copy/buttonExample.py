@@ -14,15 +14,19 @@ pool = cycle(lst)
 
 k=2
 list
+pressed=datetime.now()
+premuto = False
 while True:
     if GPIO.input(10) == GPIO.HIGH:
         i = next(pool)
         print('pressed '+i)
         display_manager.driver_print(str(i),1)
         pressed = datetime.now()
+        premuto = True
         time.sleep(1)
-    if pressed-datetime.now()>k:
+    if pressed-datetime.now()>k and premuto:
         display_manager.driver_print("pressed",2)
+        premuto=False
 
 
 
