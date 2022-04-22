@@ -16,7 +16,7 @@ class SystemManager():
     #timeout
     TIMEOUT_TIME_BTWN_FRESH = 10 # secondi entro il quale vanno ricevute 2 letture Fresh per passare in Active o Temp Reached
     
-    #tempreached
+    #tempreached // ontempreached
     TEMPREACHED_HISTERESYS = 5 # gradi di isteresi per uscire da tempreached es: temp_goal = 50, isteresi= 5 -> torno Active a 45 gradi
     TEMPREACHED_WAITING_TIME_TO = 10 # secondi dall'ultima lettura oltre il quale si passa in timeout
 
@@ -29,6 +29,12 @@ class SystemManager():
     ACTIVE_DELTA_MAX_TRIAC_UP = 100 #watt di distanza dal limite triac entro il quale non eseguiamo up per sicurezza
     ACTIVE_LOWERBOUND_IMM = 150 # watt minimi di immissione per essere in fascia goal
     ACTIVE_UPPERBOUND_IMM = 250 # watt massimi di immissione per essere in fascia goal
+    
+    #on
+    BOILER_LOWER_BOUND = 2200 # boiler watt min
+    BOILER_UPPER_BOUND = 2300 # boiler watt max
+    
+
 
     #config
     RELE_STATE = True #TODO VERIFY
@@ -87,6 +93,13 @@ class SystemManager():
         logging.info("SYTSTEM:+++UP+++")
         GPIO.output(self.pin_up,False)
         time.sleep(0.2)
+        GPIO.output(self.pin_up,True)
+
+    def long_up(self):
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM:+++LONGUP+++")
+        GPIO.output(self.pin_up,False)
+        time.sleep(1.5)
         GPIO.output(self.pin_up,True)
 
     def full_power(self):

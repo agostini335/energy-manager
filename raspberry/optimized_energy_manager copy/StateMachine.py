@@ -167,12 +167,39 @@ class OnState(AbstractState):
         self.name = 'OnState'
     def on_start(self):
         self.state_manager.system_manager.releon()
-        self.state_manager.system_manager.full_power()
     def on_exit(self):
         pass
+    def handle(self, reading):        
+        # fresh read check
+        if not reading.is_fresh:
+            return
+        # tempreached check
+        if reading.values['avg_temperatura'] >= self.state_manager.system_manager.TEMP_GOAL:
+            self.state_manager.transition_to(OnTempReachedState())
+            return
+        if reading.values['r_boiler'] >= self.state_manager.system_manager.BOILER_UPPER_BOUND:
+            self.state_manager.system_manager.s_down()
+            return
+        if reading.values['r_boiler'] < self.state_manager.system_manager.BOILER_LOWER_BOUND:
+            self.state_manager.system_manager.long_up()
+            return
+        
+class OnTempReachedState(AbstractState):
+    def __init__(self):
+        self.name = 'OnTempReachedState'
+
+    def on_start(self):
+        self.state_manager.system_manager.scarica_shutdown()
+
+    def on_exit(self):
+        pass
+
     def handle(self, reading):
-        if reading.is_fresh and reading.values['avg_temperatura'] >= self.state_manager.system_manager.TEMP_GOAL:
-            self.state_manager.transition_to(OffState())
+        if reading.values['avg_temperatura'] <= (self.state_manager.system_manager.TEMP_GOAL - self.state_manager.system_manager.TEMPREACHED_HISTERESYS):
+            self.state_manager.transition_to(OnState())
+
+
+        
         
 class OffState(AbstractState):
     def __init__(self):
