@@ -80,8 +80,9 @@ def mod_setter(mod_lock):
             mod.request_change(new_mod)
             logging.info("Request change MOD TO: "+new_mod)
     
-    #to remove
-    mod.request_change('AUTO')
+        #to remove
+        mod.request_change('AUTO')
+        time.sleep(1)
 
         
 
