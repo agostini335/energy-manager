@@ -40,7 +40,7 @@ class SystemManager():
     def __init__(self):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(19, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) 
+        
 
         self.ser = serial.Serial('/dev/ttyUSB0',9600)
         self.ser.ReadBufferSize = 20
@@ -49,9 +49,11 @@ class SystemManager():
         self.pin_rele = 16
         self.pin_up = 21
         self.pin_down =20
+        self.pin_button = 15
         GPIO.setup(self.pin_rele,GPIO.OUT) #rele
         GPIO.setup(self.pin_up,GPIO.OUT) #up
         GPIO.setup(self.pin_down,GPIO.OUT) #down
+        GPIO.setup(self.pin_button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #mod button
         GPIO.output(self.pin_rele,False)
         GPIO.output(self.pin_up,False)
         GPIO.output(self.pin_down,False)
@@ -103,7 +105,7 @@ class SystemManager():
         GPIO.output(self.pin_up,True)
     
     def buttonIsHigh(self):
-        return GPIO.input(19) == GPIO.HIGH
+        return GPIO.input(self.pin_button) == GPIO.LOW
 
         
 

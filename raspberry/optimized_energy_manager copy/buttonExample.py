@@ -10,7 +10,6 @@ from datetime import datetime
 from itertools import cycle
 
 lst = ['AUTO', 'ON', 'OFF']
-
 pool = cycle(lst)
 
 k=2
