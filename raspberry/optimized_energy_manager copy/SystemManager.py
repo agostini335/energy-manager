@@ -105,7 +105,7 @@ class SystemManager():
         GPIO.output(self.pin_up,True)
     
     def buttonIsHigh(self):
-        return GPIO.input(self.pin_button) == GPIO.LOW
+        return GPIO.input(self.pin_button) != GPIO.LOW
 
         
 
