@@ -18,7 +18,7 @@ list
 pressed=datetime.now()
 premuto = False
 while True:
-    if GPIO.input(15) != GPIO.HIGH:
+    if GPIO.input(15) != GPIO.LOW:
         i = next(pool)
         print('pressed '+i)
         display_manager.driver_print(str(i),1)
