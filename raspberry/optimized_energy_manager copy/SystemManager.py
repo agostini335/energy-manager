@@ -101,7 +101,7 @@ class SystemManager():
         GPIO.output(self.pin_down,True)
         # -> full_power
         GPIO.output(self.pin_up,False)
-        time.sleep(15)
+        time.sleep(13)
         GPIO.output(self.pin_up,True)
     
     def buttonIsHigh(self):
