@@ -78,11 +78,7 @@ def mod_setter(mod_lock):
             new_mod = i
             mod_lock.acquire()
             mod.request_change(new_mod)
-            logging.info("Request change MOD TO: "+new_mod)
-    
-        #to remove
-        mod.request_change('AUTO')
-        time.sleep(1)
+            logging.info("################################################################## Request change MOD TO: "+new_mod)
 
         
 
@@ -142,8 +138,8 @@ def mod_manager(reading_lock,mod_lock):
             reading_lock.acquire()
             current_reading = last_reading.get_copy()
             reading_lock.release()
-            display_manager.set_state(state_manager._state.name)
-            logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
+        display_manager.set_state(state_manager._state.name)
+        logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
         state_manager.handle_reading(current_reading)
         current_reading.is_fresh=False                
 

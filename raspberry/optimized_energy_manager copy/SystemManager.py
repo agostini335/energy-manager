@@ -35,7 +35,7 @@ class SystemManager():
 
     #button
     BUTTON_TIME_SLEEP = 0.5
-    BUTTON_PRESSED_WAIT = 2
+    BUTTON_PRESSED_WAIT = 3
 
     def __init__(self):
         GPIO.setwarnings(False)
