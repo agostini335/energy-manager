@@ -55,6 +55,7 @@ def stream_reader(lock):
                     logging.info("STREAM:invalid string")								
             except:
                 logging.info("STREAM:stream reader error")
+        time.sleep(0.01)
  
 def mod_setter(mod_lock):
     global mod,end_program,display_manager,system_manager
@@ -141,7 +142,8 @@ def mod_manager(reading_lock,mod_lock):
         display_manager.set_state(state_manager._state.name)
         logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
         state_manager.handle_reading(current_reading)
-        current_reading.is_fresh=False                
+        current_reading.is_fresh=False   
+        time.sleep(0.01)             
 
 
 
