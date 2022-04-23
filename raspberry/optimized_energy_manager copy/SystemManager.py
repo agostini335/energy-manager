@@ -22,8 +22,8 @@ class SystemManager():
 
     #active
     ACTIVE_WAITING_TIME_TO = 10 # secondi dall'ultima lettura oltre il quale si passa in Timeout
-    ACTIVE_MIN_IMMISSIONE = 100 # watt minimi di immissione per operare e non spegnere
-    ACTIVE_MIN_IMMISSIONE_TO = 10 # secondi di attesa in no-immissione prima di spegnere il triac
+    ACTIVE_MIN_IMMISSIONE = 50 # watt minimi di immissione per operare e non spegnere - watt mini per un long down
+    ACTIVE_MIN_IMMISSIONE_TO = 7 # secondi di attesa in no-immissione prima di spegnere il triac
     ACTIVE_NOISE_BOILER = 50 # watt di tolleranza oltre quali si considera il boiler spento e non si da il comando down
     ACTIVE_LIMITE_TRIAC = 2300 # watt max che puo raggiungere il triac
     ACTIVE_DELTA_MAX_TRIAC_UP = 100 #watt di distanza dal limite triac entro il quale non eseguiamo up per sicurezza
@@ -86,6 +86,13 @@ class SystemManager():
         logging.info("SYTSTEM:---DOWN---")
         GPIO.output(self.pin_down,False)
         time.sleep(0.2)
+        GPIO.output(self.pin_down,True)
+    
+    def long_down(self):
+        assert(self.RELE_STATE)
+        logging.info("SYTSTEM:---DOWN---")
+        GPIO.output(self.pin_down,False)
+        time.sleep(1.5)
         GPIO.output(self.pin_down,True)
 
     def s_up(self):

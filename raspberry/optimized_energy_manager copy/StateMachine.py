@@ -128,7 +128,11 @@ class ActiveState(AbstractState):
         if reading.values['r_boiler'] >= self.state_manager.system_manager.ACTIVE_LIMITE_TRIAC \
             or (reading.values['r_immissione'] < self.state_manager.system_manager.ACTIVE_LOWERBOUND_IMM \
                 and reading.values['r_boiler'] >= self.state_manager.system_manager.ACTIVE_NOISE_BOILER):
-            self.state_manager.system_manager.s_down()
+            # tipologia di down in base all'imissione
+            if reading.values['r_immissione'] < self.state_manager.system_manager.ACTIVE_MIN_IMMISSIONE:
+                self.state_manager.system_manager.long_down()  
+            else:            
+                self.state_manager.system_manager.s_down()
         elif reading.values['r_boiler']> self.state_manager.system_manager.ACTIVE_LIMITE_TRIAC-self.state_manager.system_manager.ACTIVE_DELTA_MAX_TRIAC_UP    \
             and reading.values['r_boiler'] < self.state_manager.system_manager.ACTIVE_LIMITE_TRIAC:
             logging.info("ACTIVE STATE: FASCIA GOAL -> BOILER")
