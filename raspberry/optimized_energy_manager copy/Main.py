@@ -46,8 +46,6 @@ def stream_reader(lock):
                         last_reading.set_values(values)
                         lock.release()
                         display_manager.set_reading_values({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura']})
-                        # waiting
-                        time.sleep(0.1)
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
                 elif ( len(line_split) == 2 and line_split[0]=='0'):
@@ -82,33 +80,6 @@ def mod_setter(mod_lock):
             mod_lock.acquire()
             mod.request_change(new_mod)
             logging.info("################################################################## Request change MOD TO: "+new_mod)
-
-        
-
-
-
-
-
-    #TODO REPLACE WITH BUTTON CODE
-    ###################################################################
-    '''
-    global mod,end_program,display_manager
-    while not end_program:        
-        r = random.randint(0,2)
-        if r == 0:
-            new_mod = 'OFF'
-        elif r == 1:
-            new_mod = 'ON'
-        else:
-            new_mod ='AUTO'
-        mod_lock.acquire()
-        #mod.request_change(new_mod)
-        mod.request_change('AUTO')
-        '''
-        #logging.info("Request change MOD TO: "+new_mod)
-        #display_manager.set_request_mod(new_mod)
-        #time.sleep(20*random.randint(0,10))
-    ###################################################################
 
 def display_printer():
     global display_manager,end_program
@@ -146,7 +117,7 @@ def mod_manager(reading_lock,mod_lock):
         state_manager.handle_reading(current_reading)
         #ottimizzazione, rallento il thread se ho gestito una richiesta false
         if not current_reading.is_fresh:
-            time.sleep(0.1)
+            time.sleep(0.05)
         current_reading.is_fresh=False
             
 
