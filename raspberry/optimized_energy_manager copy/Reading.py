@@ -9,7 +9,8 @@ class Reading():
         self.last_update=last_update
         self.values=values
         self.is_fresh=is_fresh
-        self.temp_dequeue = deque([0]*temp_deque_size,maxlen=temp_deque_size) 
+        #self.temp_dequeue = deque([0]*temp_deque_size,maxlen=temp_deque_size) 
+        self.temp_dequeue = deque(maxlen=temp_deque_size) 
 
     def set_values(self,values):
         self.temp_dequeue.appendleft(values['r_temperatura'])
