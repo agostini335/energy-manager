@@ -118,7 +118,7 @@ class ActiveState(AbstractState):
             if self.last_immissione_ok_tmp == None or (reading.last_update - self.last_immissione_ok_tmp).total_seconds() > self.state_manager.system_manager.ACTIVE_MIN_IMMISSIONE_TO:
                 logging.info("ACTIVE STATE: NO IMMISSIONE")
                 self.state_manager.system_manager.scarica_shutdown()
-            return
+                return
         else:
             self.last_immissione_ok_tmp = reading.last_update
 
