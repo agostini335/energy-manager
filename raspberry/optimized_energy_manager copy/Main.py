@@ -117,7 +117,7 @@ def mod_manager(reading_lock,mod_lock):
         state_manager.handle_reading(current_reading)
         #ottimizzazione, rallento il thread se ho gestito una richiesta false
         if not current_reading.is_fresh:
-            time.sleep(0.05)
+            time.sleep(0.2)
         current_reading.is_fresh=False
             
 
