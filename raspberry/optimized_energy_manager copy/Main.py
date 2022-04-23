@@ -46,6 +46,8 @@ def stream_reader(lock):
                         last_reading.set_values(values)
                         lock.release()
                         display_manager.set_reading_values({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura']})
+                        # waiting
+                        time.sleep(0.1)
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
                 elif ( len(line_split) == 2 and line_split[0]=='0'):
@@ -142,8 +144,11 @@ def mod_manager(reading_lock,mod_lock):
         display_manager.set_state(state_manager._state.name)
         logging.info("STATE: "+str(state_manager._state.name)+ "now:"+str(datetime.now())+" current reading: "+str(current_reading.last_update) +" fresh: "+str(current_reading.is_fresh))
         state_manager.handle_reading(current_reading)
-        current_reading.is_fresh=False   
-        time.sleep(0.2)             
+        #ottimizzazione, rallento il thread se ho gestito una richiesta false
+        if not current_reading.is_fresh:
+            time.sleep(0.1)
+        current_reading.is_fresh=False
+            
 
 
 
