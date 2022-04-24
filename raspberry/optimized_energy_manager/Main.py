@@ -21,7 +21,7 @@ system_manager = SystemManager()
 display_manager = DisplayManager()
 
 
-mod = Modality(default='OFF')
+mod = Modality(default='AUTO')
 if mod.current == 'OFF':
     state_manager = StateManager(OffState(),system_manager)
 elif mod.current == 'ON':
