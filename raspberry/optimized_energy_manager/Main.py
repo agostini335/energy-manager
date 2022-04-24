@@ -60,7 +60,7 @@ def stream_reader(lock):
  
 def mod_setter(mod_lock):
     global mod,end_program,display_manager,system_manager
-    display_manager.set_request_mod('AUTO') #request auto change
+    mod.request_change('AUTO') #request auto change
     lst = ['AUTO', 'ON', 'OFF']
     pool = cycle(lst)
     pressed=datetime.now()
@@ -98,6 +98,7 @@ def mod_manager(reading_lock,mod_lock):
         if mod.set_current(mod.requested):
             #transizone avvenuta
             display_manager.set_current_mod(mod.current)
+            display_manager.set_request_mod("")
             logging.info("Changing MOD from "+ str(old_mod)+" TO: "+str(mod.current))
             if mod.current == 'AUTO':
                 state_manager.transition_to(InitState())                
