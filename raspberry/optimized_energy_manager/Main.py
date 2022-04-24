@@ -21,7 +21,7 @@ system_manager = SystemManager()
 display_manager = DisplayManager()
 
 
-mod = Modality(default='AUTO')
+mod = Modality(default='OFF')
 if mod.current == 'OFF':
     state_manager = StateManager(OffState(),system_manager)
 elif mod.current == 'ON':
@@ -60,7 +60,7 @@ def stream_reader(lock):
  
 def mod_setter(mod_lock):
     global mod,end_program,display_manager,system_manager
-
+    display_manager.set_request_mod('AUTO') #request auto change
     lst = ['AUTO', 'ON', 'OFF']
     pool = cycle(lst)
     pressed=datetime.now()
