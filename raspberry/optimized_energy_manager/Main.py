@@ -8,6 +8,7 @@ from StateMachine import *
 from SystemManager import SystemManager
 from DisplayManager import DisplayManager
 from itertools import cycle
+from multiprocessing import Process, Queue
 
 logging.basicConfig(level=logging.DEBUG, handlers=[
         #logging.FileHandler("energy_manager.log"),
@@ -82,7 +83,7 @@ def mod_setter(mod_lock):
             logging.info("################################################################## Request change MOD TO: "+new_mod)
 
 def display_printer():
-    global display_manager,end_program
+    global display_manager,end_program,system_manager
     while not end_program:
         display_manager.print_reading()
         display_manager.print_mod_state()
