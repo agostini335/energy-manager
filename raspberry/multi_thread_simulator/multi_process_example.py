@@ -6,20 +6,27 @@ import time
 from datetime import date
 import os
 
-def rand_num(queue):
+
+
+
+def saver(queue,path="", buffer_size = 5):
+    df = pd.DataFrame()
     while 1:
         today = date.today()
-        # Month abbreviation, day and year	
-        d4 = today.strftime("%b-%d-%Y")
-        df = pd.DataFrame([queue.get()]) 
-        if not os.path.isfile(d4+".csv",):
-            df.to_csv(d4+".csv", header='column_names')
-        else: # else it exists so append without writing the header
-            df.to_csv(d4+".csv", mode='a', header=False)
+        file_name = today.strftime("%b-%d-%Y") +".csv"
+        full_name = path+file_name
 
+        df = df.append([queue.get()],ignore_index=True) 
+
+        if len(df) >= buffer_size:
+            if not os.path.isfile(full_name,):
+                df.to_csv(full_name, header='column_names')
+            else: # else it exists so append without writing the header
+                df.to_csv(full_name, mode='a', header=False)
+            df = df[0:0]
 if __name__ == "__main__":
     queue = Queue()
-    process = Process(target=rand_num, args=(queue,))
+    process = Process(target=saver, args=(queue,))
     process.start()
 
     while 1:
