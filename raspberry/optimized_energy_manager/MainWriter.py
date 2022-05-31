@@ -133,9 +133,9 @@ def simplesaver(queue,path="", buffer_size = 5):
         today = date.today()
         file_name = today.strftime("%b-%d-%Y") +".csv"
         full_name = path+file_name
-
-        write_list.append(queue.get())
         print("###########################################################################################################")
+        write_list.append(queue.get())
+        
 
         if len(write_list) >= buffer_size:
             if not os.path.isfile(full_name):
