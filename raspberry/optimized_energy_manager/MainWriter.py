@@ -156,7 +156,7 @@ if __name__ == "__main__":
     mod_lock.acquire() # priority to default modality
     
     #creating threads
-    thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock))
+    thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,))
     thread_mod_setter = threading.Thread(target=mod_setter, args=(mod_lock,))
     thread_mod_manager = threading.Thread(target=mod_manager, args=(last_reading_lock,mod_lock))
     thread_display = threading.Thread(target=display_printer, args=())
