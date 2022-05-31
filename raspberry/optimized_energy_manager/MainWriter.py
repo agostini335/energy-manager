@@ -34,7 +34,7 @@ elif mod.current == 'AUTO':
 else:
     raise(" NOT IMPLEMENTED MOD")
 
-def stream_reader(lock,write_queue):
+def stream_reader(lock):
     global last_reading,end_program,system_manager,display_manager,mod
     while not end_program:
         if system_manager.ser.in_waiting>0:
@@ -50,7 +50,7 @@ def stream_reader(lock,write_queue):
                         last_reading.set_values(values)
                         lock.release()
                         display_manager.set_reading_values({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura']})
-                        write_queue.put({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura'],'mod':mod.current,'tmp':datetime.datetime.now()})
+                        simplesave({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura'],'mod':mod.current,'tmp':datetime.datetime.now()})
                         print("STREAM: WRITE QUEUE SIZE"+str(len(write_queue)))
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
@@ -128,29 +128,26 @@ def mod_manager(reading_lock,mod_lock):
             time.sleep(0.2)
         current_reading.is_fresh=False
             
-def simplesaver(queue,path="", buffer_size = 5):
+def simplesave(row,path="", buffer_size = 5):
     write_list = []
     fieldnames = ['r_tensione','r_carico','r_produzione','r_immissione','r_boiler','r_temperatura','avg_temperatura','mod','tmp']
-    while 1:
-        today = date.today()
-        file_name = today.strftime("%b-%d-%Y") +".csv"
-        full_name = path+file_name
-        print("###########################################################################################################")
-        write_list.append(queue.get())
-        
+    today = date.today()
+    file_name = today.strftime("%b-%d-%Y") +".csv"
+    full_name = path+file_name
+    print("###########################################################################################################")
+    write_list.append(row)
 
-        if len(write_list) >= buffer_size:
-            if not os.path.isfile(full_name):
-                with open(full_name, 'w', encoding='ASCII', newline='') as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    writer.writeheader()
-                    writer.writerows(write_list)               
-            else: # else it exists so append without writing the header
-                with open(full_name, 'a', encoding='ASCII', newline='') as f:
-                    writer = csv.DictWriter(f, fieldnames=fieldnames)
-                    writer.writerows(write_list)
-            write_list = []
-        time.sleep(0.2)
+    if len(write_list) >= buffer_size:
+        if not os.path.isfile(full_name):
+            with open(full_name, 'w', encoding='ASCII', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(write_list)               
+        else: # else it exists so append without writing the header
+            with open(full_name, 'a', encoding='ASCII', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writerows(write_list)
+        write_list = []
 
 
 if __name__ == "__main__":
@@ -158,10 +155,9 @@ if __name__ == "__main__":
     last_reading_lock = threading.Lock()
     mod_lock = threading.Lock()
     mod_lock.acquire() # priority to default modality
-    write_queue = Queue() # write queue
     
     #creating threads
-    thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock,write_queue))
+    thread_stream_reader = threading.Thread(target=stream_reader, args=(last_reading_lock))
     thread_mod_setter = threading.Thread(target=mod_setter, args=(mod_lock,))
     thread_mod_manager = threading.Thread(target=mod_manager, args=(last_reading_lock,mod_lock))
     thread_display = threading.Thread(target=display_printer, args=())
@@ -171,9 +167,6 @@ if __name__ == "__main__":
     thread_mod_manager.start()
     thread_display.start()
 
-    #crating process
-    process_writer = Process(target=simplesaver, args=(write_queue,))
-    process_writer.start()
 
     try:
         while True:
