@@ -135,6 +135,7 @@ def simplesaver(queue,path="", buffer_size = 5):
         full_name = path+file_name
 
         write_list.append(queue.get())
+        print("###########################################################################################################")
 
         if len(write_list) >= buffer_size:
             if not os.path.isfile(full_name):
