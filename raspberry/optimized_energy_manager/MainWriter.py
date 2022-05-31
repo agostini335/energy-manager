@@ -60,6 +60,7 @@ def stream_reader(lock,write_queue):
                 else:
                     logging.info("STREAM:invalid string")								
             except:
+                raise()
                 logging.info("STREAM:stream reader error")
         time.sleep(0.1)
  
