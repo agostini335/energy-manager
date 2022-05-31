@@ -50,7 +50,8 @@ def stream_reader(lock):
                         last_reading.set_values(values)
                         lock.release()
                         display_manager.set_reading_values({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura']})
-                        simplesave({'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura'],'mod':mod.current,'tmp':datetime.datetime.now()})
+                        print("preprint")
+                        simplesave(row={'r_tensione' : int(line_split[1]),'r_carico' :   int(line_split[2]),'r_produzione' : int(line_split[3]),'r_immissione' : int(line_split[4]),'r_boiler' : int(line_split[5]), 'r_temperatura' : float(line_split[6]),'avg_temperatura':last_reading.values['avg_temperatura'],'mod':mod.current,'tmp':datetime.datetime.now()})
                     else:
                         logging.info("STREAM: NOTUPDATED"+str(datetime.now()))
                 elif ( len(line_split) == 2 and line_split[0]=='0'):
