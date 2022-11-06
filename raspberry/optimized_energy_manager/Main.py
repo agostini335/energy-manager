@@ -61,7 +61,7 @@ def stream_reader(lock):
 def mod_setter(mod_lock):
     global mod,end_program,display_manager,system_manager
     mod.request_change('AUTO') #request auto change
-    lst = ['AUTO', 'ON', 'OFF']
+    lst = ['AUTO', 'OFF', 'ON']
     pool = cycle(lst)
     pressed=datetime.now()
     premuto = False
